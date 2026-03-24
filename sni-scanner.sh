@@ -96,9 +96,23 @@ SNI_LIST=(
 
 # ======================== FUNCTIONS ==========================
 
+# Detect Termux
+IS_TERMUX=false
+if [ -d "/data/data/com.termux" ]; then
+    IS_TERMUX=true
+fi
+
 check_deps() {
+    echo -e "${CYAN}Kiểm tra dependencies...${NC}"
+
+    # Auto-install trên Termux
+    if [ "$IS_TERMUX" = true ]; then
+        echo -e "  ${YELLOW}Detected: Termux${NC}"
+        pkg install -y curl openssl-tool dnsutils coreutils 2>/dev/null
+    fi
+
     local missing=()
-    for cmd in curl openssl timeout; do
+    for cmd in curl openssl; do
         if ! command -v "$cmd" &>/dev/null; then
             missing+=("$cmd")
         fi
@@ -106,16 +120,51 @@ check_deps() {
 
     if [ ${#missing[@]} -gt 0 ]; then
         echo -e "${RED}Thiếu: ${missing[*]}${NC}"
-        echo "Cài đặt: apt install -y curl openssl coreutils"
+        if [ "$IS_TERMUX" = true ]; then
+            echo "Chạy: pkg install -y curl openssl-tool dnsutils"
+        else
+            echo "Chạy: apt install -y curl openssl dnsutils coreutils"
+        fi
         exit 1
+    fi
+    echo -e "  ${GREEN}OK${NC}"
+}
+
+# Timeout wrapper (tương thích Termux)
+do_timeout() {
+    local secs="$1"
+    shift
+    if command -v timeout &>/dev/null; then
+        timeout "$secs" "$@"
+    else
+        # Fallback cho Termux không có timeout
+        "$@" &
+        local pid=$!
+        ( sleep "$secs"; kill "$pid" 2>/dev/null ) &
+        local watchdog=$!
+        wait "$pid" 2>/dev/null
+        local ret=$?
+        kill "$watchdog" 2>/dev/null
+        wait "$watchdog" 2>/dev/null
+        return $ret
     fi
 }
 
-# Test 1: DNS resolve
+# Test 1: DNS resolve (tương thích Termux)
 test_dns() {
     local sni="$1"
-    local result=$(timeout ${TIMEOUT} nslookup "$sni" 2>/dev/null | grep -c "Address")
-    [ "$result" -gt 1 ] && return 0 || return 1
+    # Thử nslookup trước, fallback sang ping
+    if command -v nslookup &>/dev/null; then
+        local result=$(do_timeout ${TIMEOUT} nslookup "$sni" 2>/dev/null | grep -c "Address")
+        [ "$result" -gt 1 ] && return 0 || return 1
+    elif command -v getent &>/dev/null; then
+        do_timeout ${TIMEOUT} getent hosts "$sni" &>/dev/null
+        return $?
+    else
+        # Fallback: dùng ping 1 lần để check DNS
+        do_timeout ${TIMEOUT} ping -c 1 "$sni" &>/dev/null
+        return $?
+    fi
 }
 
 # Test 2: TLS handshake với SNI
@@ -123,7 +172,7 @@ test_tls_handshake() {
     local sni="$1"
     local host="$2"
     local port="$3"
-    timeout ${TIMEOUT} openssl s_client -connect "${host}:${port}" \
+    do_timeout ${TIMEOUT} openssl s_client -connect "${host}:${port}" \
         -servername "${sni}" \
         -brief 2>/dev/null </dev/null | grep -qi "connected\|established"
     return $?
@@ -132,7 +181,7 @@ test_tls_handshake() {
 # Test 3: HTTP CONNECT qua SNI (carrier test)
 test_http_connect() {
     local sni="$1"
-    local result=$(timeout ${TIMEOUT} curl -s -o /dev/null -w "%{http_code}" \
+    local result=$(do_timeout ${TIMEOUT} curl -s -o /dev/null -w "%{http_code}" \
         --connect-timeout ${TIMEOUT} \
         -H "Host: ${sni}" \
         "http://${sni}/" 2>/dev/null)
@@ -145,7 +194,7 @@ test_ws_to_vps() {
     if [ "$VPS_IP" = "THAY_IP_VPS" ]; then
         return 2  # Skip
     fi
-    timeout ${TIMEOUT} curl -s -o /dev/null -w "%{http_code}" \
+    do_timeout ${TIMEOUT} curl -s -o /dev/null -w "%{http_code}" \
         --connect-timeout ${TIMEOUT} \
         -H "Host: ${sni}" \
         -H "Upgrade: websocket" \
@@ -158,7 +207,7 @@ test_ws_to_vps() {
 test_zero_rating() {
     local sni="$1"
     # Gửi request nhỏ với SNI header, nếu status OK = có thể free
-    local code=$(timeout ${TIMEOUT} curl -s -o /dev/null -w "%{http_code}" \
+    local code=$(do_timeout ${TIMEOUT} curl -s -o /dev/null -w "%{http_code}" \
         --connect-timeout ${TIMEOUT} \
         --resolve "${sni}:443:${sni}" \
         "https://${sni}/" 2>/dev/null)
