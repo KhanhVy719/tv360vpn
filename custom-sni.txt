@@ -1,53 +1,81 @@
-# SNI tùy chỉnh - Thêm domain vào đây để scan
-# Mỗi dòng 1 domain, bỏ trống hoặc # để comment
-#
-# Cách dùng: bash sni-scanner.sh --custom custom-sni.txt
+# ============================================
+# TV360 SNI List - Quét thực tế
+# Cập nhật: 2026-03-24
+# Tổng: 56 subdomains
+# ============================================
 
-# TV360
-tv360.vn
-livestream.tv360.vn
+# === WILDCARD ===
+*.tv360.vn
+
+# === LIVESTREAM (ưu tiên cao) ===
 livestream2.tv360.vn
-livestream3.tv360.vn
-livestream4.tv360.vn
-api.tv360.vn
-cdn.tv360.vn
-static.tv360.vn
-stream.tv360.vn
-m.tv360.vn
-app.tv360.vn
-media.tv360.vn
-img.tv360.vn
-video.tv360.vn
 live.tv360.vn
-play.tv360.vn
-hls.tv360.vn
-dash.tv360.vn
+live-ali2.tv360.vn
+live-ali4.tv360.vn
+live-cdn1.tv360.vn
+live-sdrm.tv360.vn
+live-zlr1.tv360.vn
 
-# Viettel ecosystem
-viettel.vn
-my.viettel.vn
-viettelmoney.vn
-viettelpay.vn
-viettelpost.vn
-vietteltelecom.vn
-mocha.vn
-mocha.com.vn
-data.viettel.vn
+# === VIDEO / VOD ===
+videoakam1.tv360.vn
+videoakm.tv360.vn
+videoakm1.tv360.vn
+videoakm2.tv360.vn
+videoakm5.tv360.vn
+videoidc1.tv360.vn
+videoidc2.tv360.vn
+vod-ali1.tv360.vn
+vod-h01-hkh.tv360.vn
+vod-h06-hht.tv360.vn
+vod-h06-hlc.tv360.vn
+vod-zlr2.tv360.vn
 
-# MobiFone
-mobifone.vn
-my.mobifone.vn
-cliptv.vn
-mycliptv.vn
+# === IMAGE / CDN ===
+imageakm1.tv360.vn
+imageakm2.tv360.vn
+imageakm5.tv360.vn
+imageidc1.tv360.vn
+imageidc2.tv360.vn
+img-evg4.tv360.vn
+img-zlr1.tv360.vn
+img-zlr2.tv360.vn
 
-# VinaPhone / VNPT
-vinaphone.vn
-my.vinaphone.vn
-vnpt.vn
+# === API ===
+api.tv360.vn
+api2.tv360.vn
+api-hlc.tv360.vn
 
-# Zalo
-zalo.vn
-zalo.me
-chat.zalo.me
-cdn.zalo.me
-stc.zalo.me
+# === MAIN / MOBILE ===
+tv360.vn
+m.tv360.vn
+ws.tv360.vn
+qr.tv360.vn
+qr2.tv360.vn
+
+# === BOX / DEVICE ===
+box-hisensetms.tv360.vn
+box-skwserver.tv360.vn
+box-ztetms.tv360.vn
+
+# === DRM / SECURITY ===
+sdrm.tv360.vn
+registry-drm.tv360.vn
+
+# === CARRIER SPECIFIC ===
+mobifoneakm1.tv360.vn
+congskakm1.tv360.vn
+virtualm1.tv360.vn
+
+# === OTHER ===
+hotro.tv360.vn
+log.tv360.vn
+mail.tv360.vn
+webmail.tv360.vn
+hostmaster.tv360.vn
+elofun.tv360.vn
+pubads-wiinvent.tv360.vn
+ketnoitronniemvui.tv360.vn
+yeunuoctheocachcuaban.tv360.vn
+online-banking.tv360.vn
+techcombank.tv360.vn
+does-no-exist33.tv360.vn
