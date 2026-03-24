@@ -13,11 +13,21 @@
 set -o pipefail
 
 # ======================== CONFIG =============================
-VPS_IP="${1:-THAY_IP_VPS}"       # IP VPS của bạn
+VPS_IP="THAY_IP_VPS"              # IP VPS của bạn
 VPS_PORT=443                      # Port V2Ray trên VPS
 TIMEOUT=5                         # Timeout mỗi test (giây)
 THREADS=10                        # Số luồng song song
 RESULT_FILE="sni-results-$(date +%Y%m%d-%H%M%S).txt"
+SNI_FILE="custom-sni.txt"         # File danh sách SNI tùy chỉnh
+USE_FILE_ONLY=false               # true = chỉ dùng file, bỏ list mặc định
+
+# Parse arguments
+for arg in "$@"; do
+    case "$arg" in
+        --file) USE_FILE_ONLY=true ;;
+        *) VPS_IP="$arg" ;;
+    esac
+done
 # =============================================================
 
 RED='\033[0;31m'
@@ -93,6 +103,26 @@ SNI_LIST=(
     "fbcdn.net"
     "googlevideo.com"
 )
+
+# Load SNI từ file custom-sni.txt nếu có
+if [ -f "$SNI_FILE" ]; then
+    FILE_DOMAINS=()
+    while IFS= read -r line; do
+        # Bỏ comment, dòng trống, wildcard
+        line=$(echo "$line" | sed 's/#.*//' | xargs)
+        [[ -z "$line" ]] && continue
+        [[ "$line" == \** ]] && continue
+        FILE_DOMAINS+=("$line")
+    done < "$SNI_FILE"
+
+    if [ "$USE_FILE_ONLY" = true ]; then
+        SNI_LIST=("${FILE_DOMAINS[@]}")
+    else
+        # Gộp file + list mặc định, loại trùng
+        SNI_LIST+=("${FILE_DOMAINS[@]}")
+        SNI_LIST=($(printf '%s\n' "${SNI_LIST[@]}" | sort -u))
+    fi
+fi
 
 # ======================== FUNCTIONS ==========================
 
