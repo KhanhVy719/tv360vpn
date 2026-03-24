@@ -1,0 +1,53 @@
+# SNI tùy chỉnh - Thêm domain vào đây để scan
+# Mỗi dòng 1 domain, bỏ trống hoặc # để comment
+#
+# Cách dùng: bash sni-scanner.sh --custom custom-sni.txt
+
+# TV360
+tv360.vn
+livestream.tv360.vn
+livestream2.tv360.vn
+livestream3.tv360.vn
+livestream4.tv360.vn
+api.tv360.vn
+cdn.tv360.vn
+static.tv360.vn
+stream.tv360.vn
+m.tv360.vn
+app.tv360.vn
+media.tv360.vn
+img.tv360.vn
+video.tv360.vn
+live.tv360.vn
+play.tv360.vn
+hls.tv360.vn
+dash.tv360.vn
+
+# Viettel ecosystem
+viettel.vn
+my.viettel.vn
+viettelmoney.vn
+viettelpay.vn
+viettelpost.vn
+vietteltelecom.vn
+mocha.vn
+mocha.com.vn
+data.viettel.vn
+
+# MobiFone
+mobifone.vn
+my.mobifone.vn
+cliptv.vn
+mycliptv.vn
+
+# VinaPhone / VNPT
+vinaphone.vn
+my.vinaphone.vn
+vnpt.vn
+
+# Zalo
+zalo.vn
+zalo.me
+chat.zalo.me
+cdn.zalo.me
+stc.zalo.me
