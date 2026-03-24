@@ -1,0 +1,32 @@
+# =============================================
+# NPV Tunnel - SSH Config (Cách 2)
+# Dùng cho 4G/5G Viettel Free Data
+# =============================================
+#
+# Mở NPV Tunnel > SSH > Thêm mới
+# Nhập các thông tin sau:
+#
+# =============================================
+
+Connection Type   : SSH + WebSocket (HTTP Proxy)
+
+SSH Host          : THAY_IP_VPS_CUA_BAN
+SSH Port          : 22
+Username          : root
+Password          : THAY_PASSWORD_SSH
+
+Proxy Type        : HTTP
+Proxy Host        : THAY_IP_VPS_CUA_BAN
+Proxy Port        : 8080
+
+SNI / Bug Host    : livestream2.tv360.vn
+
+# =============================================
+# LƯU Ý:
+# - Nhớ thay IP VPS và password SSH
+# - SNI PHẢI là livestream2.tv360.vn
+# - Bật trên mạng 4G/5G Viettel
+# - Nếu không kết nối được, thử đổi:
+#   + Proxy Port: 80 hoặc 443
+#   + Connection Type: SSH + SSL/TLS
+# =============================================

@@ -1,0 +1,31 @@
+{
+    "_comment": "NPV Tunnel V2Ray Config - TV360 Free Data 4G/5G",
+    "_instructions": "Import file này vào NPV Tunnel app > V2Ray > Import from file",
+    "_sni_note": "SNI livestream2.tv360.vn giúp carrier nghĩ traffic đi tới TV360 (free data Viettel)",
+
+    "remarks": "TV360-FreeData",
+    "server": "THAY_IP_VPS_CUA_BAN",
+    "server_port": 443,
+    "protocol": "vmess",
+
+    "vmess": {
+        "id": "THAY_UUID_SAU_KHI_CAI_DAT",
+        "alterId": 0,
+        "security": "auto"
+    },
+
+    "stream": {
+        "network": "ws",
+        "wsSettings": {
+            "path": "/tv360stream",
+            "headers": {
+                "Host": "livestream2.tv360.vn"
+            }
+        },
+        "security": "tls",
+        "tlsSettings": {
+            "serverName": "livestream2.tv360.vn",
+            "allowInsecure": true
+        }
+    }
+}
